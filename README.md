@@ -1,82 +1,106 @@
-# Framework Kiểm Thử Tự Động với Playwright, Java và TestNG
+# Framework Kiểm Thử Tự Động với Playwright và Cucumber
 
 ## 1. Giới thiệu
 
-Đây là một framework kiểm thử tự động được xây dựng để kiểm thử các ứng dụng web hiện đại. Framework được thiết kế theo các mẫu kiến trúc phổ biến như Page Object Model (POM), giúp cho việc bảo trì và mở rộng trở nên dễ dàng.
+Đây là một framework kiểm thử tự động được xây dựng để kiểm thử các ứng dụng web hiện đại. Framework sử dụng kiến trúc **BDD (Behavior-Driven Development)** với Cucumber, kết hợp với **Page Object Model (POM)** để tạo ra một hệ thống kiểm thử mạnh mẽ, dễ đọc và dễ bảo trì.
+
+Các kịch bản kiểm thử được viết bằng ngôn ngữ tự nhiên (Gherkin), giúp cho tất cả mọi người trong đội dự án, từ Business Analyst đến Lập trình viên, đều có thể đọc, hiểu và đóng góp.
 
 ## 2. Công nghệ sử dụng
 
 - **Ngôn ngữ lập trình:** Java 11
 - **Nền tảng tự động hóa:** Playwright for Java
-- **Quản lý dự án và thư viện:** Apache Maven
+- **Kiến trúc kiểm thử:** BDD với Cucumber
 - **Nền tảng chạy test:** TestNG
+- **Quản lý dự án và thư viện:** Apache Maven
 - **Tạo báo cáo:** Allure Framework
-- **Quản lý dữ liệu test:** Apache POI (đọc file Excel)
-- **Tích hợp liên tục (CI/CD):** GitHub Actions
+- **Tích hợp liên tục (CI/CD):** GitHub Actions, Jenkins
 
-## 3. Cài đặt môi trường
+## 3. Kiến trúc và Luồng hoạt động
 
-Để có thể chạy được framework này trên máy cá nhân, bạn cần cài đặt:
+Framework được thiết kế theo nhiều lớp để tách biệt các mối quan tâm:
 
-1.  **JDK 11 (Java Development Kit):** Đảm bảo bạn đã cài đặt Java 11 và cấu hình biến môi trường `JAVA_HOME`.
-2.  **Apache Maven:** Cài đặt Maven và cấu hình biến môi trường để có thể sử dụng lệnh `mvn` từ terminal.
-3.  **Git:** Để clone (sao chép) mã nguồn từ repository.
-
-## 4. Hướng dẫn cài đặt và chạy
-
-### Bước 1: Clone dự án
-
-Mở terminal và chạy lệnh sau để tải mã nguồn về máy:
-
-```sh
-git clone <URL-CỦA-REPOSITORY-CỦA-BẠN>
-cd tclife
+```
+[Features] -> [Step Definitions] -> [Page Objects] -> [Playwright]
 ```
 
-### Bước 2: Cài đặt các thư viện
+1.  **Features (`.feature` files):**
+    - **Vị trí:** `src/test/resources/features`
+    - **Mục đích:** Chứa các kịch bản kiểm thử được viết bằng ngôn ngữ tự nhiên (Gherkin). Đây là "Tài liệu sống", mô tả hành vi của ứng dụng.
+    - **Ví dụ:** `Login.feature`
 
-Maven sẽ tự động thực hiện việc này. Lần đầu tiên chạy, quá trình này có thể mất một vài phút.
+2.  **Step Definitions (`...Steps.java`):**
+    - **Vị trí:** `src/test/java/com/tclife/stepdefinitions`
+    - **Mục đích:** Là lớp "keo" (glue) dịch các câu lệnh Gherkin trong file feature thành code Java có thể thực thi.
+    - **Cách hoạt động:** Mỗi `Given`, `When`, `Then` trong file feature sẽ tương ứng với một phương thức Java trong lớp này. Các phương thức này sẽ gọi đến các hành động trong Page Objects.
 
-### Bước 3: Chạy kiểm thử
+3.  **Page Objects (`...Page.java`):**
+    - **Vị trí:** `src/main/java/com/tclife/pages`
+    - **Mục đích:** Mô hình hóa các trang của ứng dụng web. Mỗi lớp Page Object chịu trách nhiệm quản lý các phần tử (locators) và các hành động của người dùng trên trang đó.
 
-Sử dụng lệnh sau trong terminal tại thư mục gốc của dự án:
+4.  **Test Runner (`TestRunner.java`):**
+    - **Vị trí:** `src/test/java/com/tclife/tests`
+    - **Mục đích:** Là điểm khởi đầu để chạy các bài test. Nó sử dụng các annotation của Cucumber để chỉ định nơi tìm file feature, nơi tìm step definitions, và cách tạo báo cáo.
+
+## 4. Hướng dẫn chạy
+
+### 4.1. Chạy trên máy cá nhân (Local)
+
+**Bước 1: Clone dự án**
+
+```sh
+git clone https://github.com/ducanhdhtb/build_playwright_by_gemini.git
+cd build_playwright_by_gemini
+```
+
+**Bước 2: Chạy kiểm thử**
+
+Sử dụng lệnh sau trong terminal:
 
 ```sh
 mvn clean test
 ```
 
-Lệnh này sẽ thực hiện các công việc sau:
-- `clean`: Xóa thư mục `target` để dọn dẹp các kết quả từ lần build trước.
-- `test`: Biên dịch mã nguồn và thực thi các bộ kiểm thử được định nghĩa trong file `src/test/resources/testng.xml`.
+Lệnh này sẽ khởi chạy TestNG, TestNG sẽ chạy `TestRunner`, và `TestRunner` sẽ thực thi các kịch bản trong các file `.feature`.
 
-### Bước 4: Xem báo cáo kiểm thử
+**Bước 3: Xem báo cáo kiểm thử**
 
-Sau khi quá trình chạy test hoàn tất, bạn có thể xem báo cáo Allure chi tiết bằng lệnh:
+Sau khi chạy xong, xem báo cáo Allure chi tiết bằng lệnh:
 
 ```sh
 mvn allure:serve
 ```
 
-Lệnh này sẽ tạo một web server tạm thời và tự động mở báo cáo trên trình duyệt của bạn. Báo cáo sẽ bao gồm các bước thực thi, ảnh chụp màn hình tại từng bước, và file trace để debug.
+Báo cáo sẽ được nhóm theo "Tính năng" (Feature) và "Kịch bản" (Scenario), rất trực quan và dễ theo dõi.
 
-## 5. Quản lý dữ liệu Test
+## 5. Tích hợp liên tục (CI/CD)
 
-Framework được thiết kế để tách biệt dữ liệu ra khỏi mã nguồn, giúp việc quản lý các trường hợp kiểm thử trở nên linh hoạt.
+Framework này được cấu hình để chạy trên cả GitHub Actions và Jenkins.
 
-- **Vị trí file dữ liệu:** `src/test/resources/testdata/SauceDemoTestData.xlsx`
-- **Cách hoạt động:**
-    1.  Lớp `ExcelUtil.java` sẽ đọc dữ liệu từ file Excel.
-    2.  Phương thức `@DataProvider` trong lớp `LoginPageTest` sẽ lấy dữ liệu này.
-    3.  TestNG sẽ tự động chạy kịch bản `loginTest` nhiều lần, tương ứng với mỗi dòng dữ liệu trong file Excel.
-- **Để thêm kịch bản mới:** Bạn chỉ cần mở file Excel và thêm một dòng mới với dữ liệu tương ứng mà không cần sửa code.
-
-## 6. Tích hợp liên tục (CI/CD) với GitHub Actions
-
-Framework này đã được tích hợp sẵn một quy trình CI/CD sử dụng GitHub Actions.
+### 5.1. Với GitHub Actions
 
 - **File cấu hình:** `.github/workflows/ci.yml`
 - **Luồng hoạt động:**
-    1.  Quy trình sẽ tự động được kích hoạt mỗi khi có code mới được đẩy lên nhánh `main`.
-    2.  GitHub Actions sẽ tự động cài đặt môi trường và chạy lệnh `mvn clean test`.
-    3.  Sau khi test chạy xong, báo cáo Allure sẽ được tạo và triển khai lên GitHub Pages.
-    4.  Bạn có thể truy cập vào URL của GitHub Pages để xem báo cáo mới nhất mà không cần chạy lại test trên máy cá nhân. (URL có thể được tìm thấy trong `Settings` -> `Pages` của repository).
+    1.  Quy trình tự động được kích hoạt mỗi khi có code mới được đẩy lên nhánh `main`.
+    2.  GitHub Actions sẽ chạy `mvn clean test`.
+    3.  Báo cáo Allure sẽ được tạo và triển khai lên GitHub Pages.
+- **Cách xem báo cáo Allure trên GitHub:**
+    1.  Truy cập vào repository trên GitHub.
+    2.  Đi đến tab **"Settings"** -> **"Pages"**.
+    3.  Bạn sẽ thấy một URL có dạng `https://<username>.github.io/<repository-name>/`. Đây chính là link để xem báo cáo Allure mới nhất.
+
+### 5.2. Với Jenkins
+
+- **File cấu hình:** `Jenkinsfile`
+- **Luồng hoạt động:**
+    1.  Pipeline được cấu hình để tự động chạy mỗi giờ một lần (`cron('H * * * *')`).
+    2.  Jenkins sẽ checkout code, chạy `mvn clean test`, và publish báo cáo Allure.
+    3.  Sau khi hoàn tất, một email thông báo kết quả sẽ được gửi đến địa chỉ đã được cấu hình.
+- **Hướng dẫn thiết lập Job trên Jenkins:**
+    1.  **Cài đặt Plugins:** Đảm bảo Jenkins đã được cài các plugin: `Allure Jenkins Plugin`, `Email Extension Plugin`, `JDK Tool`, `Maven Integration`.
+    2.  **Cấu hình Tools:** Vào `Manage Jenkins` -> `Tools` để cấu hình đường dẫn cho `jdk11` và `maven3`.
+    3.  **Cấu hình Email:** Vào `Manage Jenkins` -> `System` để cấu hình SMTP server.
+    4.  **Tạo Job:**
+        - Chọn `New Item`, đặt tên và chọn loại `Pipeline`.
+        - Trong mục "Pipeline", chọn `Pipeline script from SCM`, điền URL của repo và đảm bảo **Script Path** là `Jenkinsfile`.
+    5.  **Chạy Job:** Click `Build Now` để chạy ngay lập tức, hoặc đợi Jenkins tự động chạy theo lịch.

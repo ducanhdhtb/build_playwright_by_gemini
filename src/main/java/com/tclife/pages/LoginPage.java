@@ -31,22 +31,24 @@ public class LoginPage {
         return page.title();
     }
 
-    public void doLogin(String appUserName, String appPassword) {
-        Allure.step("Logging in with user: " + appUserName, () -> {
-            Allure.step("Filling username", () -> {
-                page.fill(userName, appUserName);
-                attachScreenshot("After filling username");
-            });
+    public void enterUserName(String appUserName) {
+        Allure.step("Filling username: " + appUserName, () -> {
+            page.fill(userName, appUserName);
+            attachScreenshot("After filling username");
+        });
+    }
 
-            Allure.step("Filling password", () -> {
-                page.fill(password, appPassword);
-                attachScreenshot("After filling password");
-            });
+    public void enterPassword(String appPassword) {
+        Allure.step("Filling password", () -> {
+            page.fill(password, appPassword);
+            attachScreenshot("After filling password");
+        });
+    }
 
-            Allure.step("Clicking Login button", () -> {
-                page.click(loginButton);
-                attachScreenshot("After clicking login");
-            });
+    public void clickLoginButton() {
+        Allure.step("Clicking Login button", () -> {
+            page.click(loginButton);
+            attachScreenshot("After clicking login");
         });
     }
 

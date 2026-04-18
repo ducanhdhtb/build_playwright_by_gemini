@@ -25,30 +25,62 @@
         <aspectj.version>1.9.21</aspectj.version>
         <maven.surefire.plugin.version>3.2.5</maven.surefire.plugin.version>
         <poi.version>5.2.3</poi.version>
+        <cucumber.version>7.14.0</cucumber.version>
         <!-- Explicitly define the results directory -->
         <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
     </properties>
 
     <dependencies>
+        <!-- Playwright -->
         <dependency>
             <groupId>com.microsoft.playwright</groupId>
             <artifactId>playwright</artifactId>
             <version>1.40.0</version>
         </dependency>
-        <dependency>
-            <groupId>io.qameta.allure</groupId>
-            <artifactId>allure-java-commons</artifactId>
-            <version>${allure.version}</version>
-        </dependency>
+
+        <!-- TestNG -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>7.7.1</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Cucumber -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-testng</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-picocontainer</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Allure -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-java-commons</artifactId>
+            <version>${allure.version}</version>
+        </dependency>
         <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-testng</artifactId>
+            <version>${allure.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-cucumber7-jvm</artifactId>
             <version>${allure.version}</version>
             <scope>test</scope>
         </dependency>
@@ -63,6 +95,7 @@
             <version>2.0.9</version>
             <scope>test</scope>
         </dependency>
+
         <!-- Apache POI for Excel -->
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -98,12 +131,6 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
-                    <properties>
-                        <property>
-                            <name>listener</name>
-                            <value>io.qameta.allure.testng.AllureTestNg</value>
-                        </property>
-                    </properties>
                     <systemPropertyVariables>
                         <allure.results.directory>${allure.results.directory}</allure.results.directory>
                     </systemPropertyVariables>

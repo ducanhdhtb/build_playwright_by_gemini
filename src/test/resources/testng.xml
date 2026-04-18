@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 
-<suite name="Playwright Test Suite" verbose="4">
+<suite name="Playwright Cucumber Test Suite" verbose="4" parallel="tests" thread-count="2">
 
-    <test name="Sauce Demo Tests">
+    <test name="SauceDemo BDD Tests">
         <classes>
-            <class name="com.tclife.tests.LoginPageTest" />
+            <class name="com.tclife.tests.TestRunner" />
         </classes>
     </test>
 
