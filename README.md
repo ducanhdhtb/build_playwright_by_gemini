@@ -27,20 +27,18 @@ Framework được thiết kế theo nhiều lớp để tách biệt các mối
 1.  **Features (`.feature` files):**
     - **Vị trí:** `src/test/resources/features`
     - **Mục đích:** Chứa các kịch bản kiểm thử được viết bằng ngôn ngữ tự nhiên (Gherkin). Đây là "Tài liệu sống", mô tả hành vi của ứng dụng.
-    - **Ví dụ:** `Login.feature`
 
 2.  **Step Definitions (`...Steps.java`):**
     - **Vị trí:** `src/test/java/com/tclife/stepdefinitions`
-    - **Mục đích:** Là lớp "keo" (glue) dịch các câu lệnh Gherkin trong file feature thành code Java có thể thực thi.
-    - **Cách hoạt động:** Mỗi `Given`, `When`, `Then` trong file feature sẽ tương ứng với một phương thức Java trong lớp này. Các phương thức này sẽ gọi đến các hành động trong Page Objects.
+    - **Mục đích:** Là lớp "keo" (glue) dịch các câu lệnh Gherkin thành code Java có thể thực thi.
 
 3.  **Page Objects (`...Page.java`):**
     - **Vị trí:** `src/main/java/com/tclife/pages`
-    - **Mục đích:** Mô hình hóa các trang của ứng dụng web. Mỗi lớp Page Object chịu trách nhiệm quản lý các phần tử (locators) và các hành động của người dùng trên trang đó.
+    - **Mục đích:** Mô hình hóa các trang của ứng dụng web, quản lý các phần tử (locators) và các hành động của người dùng trên trang đó.
 
 4.  **Test Runner (`TestRunner.java`):**
     - **Vị trí:** `src/test/java/com/tclife/tests`
-    - **Mục đích:** Là điểm khởi đầu để chạy các bài test. Nó sử dụng các annotation của Cucumber để chỉ định nơi tìm file feature, nơi tìm step definitions, và cách tạo báo cáo.
+    - **Mục đích:** Là điểm khởi đầu để chạy các bài test, kết nối TestNG với Cucumber.
 
 ## 4. Hướng dẫn chạy
 
@@ -55,23 +53,15 @@ cd build_playwright_by_gemini
 
 **Bước 2: Chạy kiểm thử**
 
-Sử dụng lệnh sau trong terminal:
-
 ```sh
 mvn clean test
 ```
 
-Lệnh này sẽ khởi chạy TestNG, TestNG sẽ chạy `TestRunner`, và `TestRunner` sẽ thực thi các kịch bản trong các file `.feature`.
-
 **Bước 3: Xem báo cáo kiểm thử**
-
-Sau khi chạy xong, xem báo cáo Allure chi tiết bằng lệnh:
 
 ```sh
 mvn allure:serve
 ```
-
-Báo cáo sẽ được nhóm theo "Tính năng" (Feature) và "Kịch bản" (Scenario), rất trực quan và dễ theo dõi.
 
 ## 5. Tích hợp liên tục (CI/CD)
 
@@ -80,27 +70,31 @@ Framework này được cấu hình để chạy trên cả GitHub Actions và J
 ### 5.1. Với GitHub Actions
 
 - **File cấu hình:** `.github/workflows/ci.yml`
-- **Luồng hoạt động:**
-    1.  Quy trình tự động được kích hoạt mỗi khi có code mới được đẩy lên nhánh `main`.
-    2.  GitHub Actions sẽ chạy `mvn clean test`.
-    3.  Báo cáo Allure sẽ được tạo và triển khai lên GitHub Pages.
-- **Cách xem báo cáo Allure trên GitHub:**
-    1.  Truy cập vào repository trên GitHub.
-    2.  Đi đến tab **"Settings"** -> **"Pages"**.
-    3.  Bạn sẽ thấy một URL có dạng `https://<username>.github.io/<repository-name>/`. Đây chính là link để xem báo cáo Allure mới nhất.
+- **Luồng hoạt động:** Tự động chạy test và triển khai báo cáo Allure lên GitHub Pages mỗi khi có code mới được đẩy lên.
+- **Cách xem báo cáo:** Truy cập tab **"Settings"** -> **"Pages"** của repository để lấy URL của báo cáo.
 
 ### 5.2. Với Jenkins
 
 - **File cấu hình:** `Jenkinsfile`
-- **Luồng hoạt động:**
-    1.  Pipeline được cấu hình để tự động chạy mỗi giờ một lần (`cron('H * * * *')`).
-    2.  Jenkins sẽ checkout code, chạy `mvn clean test`, và publish báo cáo Allure.
-    3.  Sau khi hoàn tất, một email thông báo kết quả sẽ được gửi đến địa chỉ đã được cấu hình.
-- **Hướng dẫn thiết lập Job trên Jenkins:**
-    1.  **Cài đặt Plugins:** Đảm bảo Jenkins đã được cài các plugin: `Allure Jenkins Plugin`, `Email Extension Plugin`, `JDK Tool`, `Maven Integration`.
-    2.  **Cấu hình Tools:** Vào `Manage Jenkins` -> `Tools` để cấu hình đường dẫn cho `jdk11` và `maven3`.
-    3.  **Cấu hình Email:** Vào `Manage Jenkins` -> `System` để cấu hình SMTP server.
-    4.  **Tạo Job:**
-        - Chọn `New Item`, đặt tên và chọn loại `Pipeline`.
-        - Trong mục "Pipeline", chọn `Pipeline script from SCM`, điền URL của repo và đảm bảo **Script Path** là `Jenkinsfile`.
-    5.  **Chạy Job:** Click `Build Now` để chạy ngay lập tức, hoặc đợi Jenkins tự động chạy theo lịch.
+- **Luồng hoạt động:** Tự động chạy test mỗi giờ, publish báo cáo Allure và gửi email thông báo kết quả.
+- **Hướng dẫn thiết lập:** Xem chi tiết trong file `architecture.md`.
+
+## 6. Tổng kết - Các tính năng nổi bật
+
+Framework này đã được xây dựng hoàn chỉnh với các tính năng chuyên nghiệp:
+
+-   **Kiến trúc BDD:** Các kịch bản test được viết bằng ngôn ngữ tự nhiên, dễ hiểu cho mọi thành viên trong đội.
+-   **Báo cáo trực quan:** Tích hợp Allure để tạo báo cáo chi tiết với ảnh chụp màn hình từng bước và khả năng debug sâu với Playwright Trace.
+-   **Tự động hóa CI/CD kép:** Sẵn sàng để chạy trên cả GitHub Actions và Jenkins, cho phép tự động chạy theo lịch, tự động publish báo cáo và gửi thông báo.
+-   **Thiết kế hướng bảo trì:** Áp dụng Page Object Model giúp việc cập nhật và bảo trì code trở nên đơn giản khi giao diện web thay đổi.
+-   **Thông minh với môi trường:** Tự động phát hiện môi trường CI/CD để chuyển sang chế độ không giao diện (headless), giúp chạy test ổn định.
+-   **Tài liệu hóa đầy đủ:** Có file `README.md` và `architecture.md` chi tiết, giúp người mới dễ dàng tiếp cận và sử dụng.
+
+## 7. Công việc tiếp theo
+
+Framework đã hoàn thiện về mặt nền tảng. Công việc tiếp theo là vận hành và mở rộng nó:
+
+1.  **Viết kịch bản test mới:** Tạo các file `.feature` mới cho các chức năng khác của ứng dụng.
+2.  **Thêm Step Definitions và Page Objects:** Viết code Java tương ứng cho các kịch bản mới.
+3.  **Bảo trì:** Cập nhật các locators trong Page Objects khi giao diện web thay đổi.
+4.  **Phân tích kết quả:** Theo dõi các báo cáo Allure được tạo ra tự động để tìm kiếm lỗi và đảm bảo chất lượng cho sản phẩm.

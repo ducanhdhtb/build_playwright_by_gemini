@@ -12,7 +12,8 @@ import org.testng.annotations.DataProvider;
                 "json:target/cucumber-reports/CucumberTestReport.json",
                 "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm"
         },
-        tags = "@login"
+        // This is where you control which tests to run
+        tags = "@regression"
 )
 public class TestRunner extends AbstractTestNGCucumberTests {
     @Override
