@@ -8,6 +8,15 @@
     <artifactId>build_playwright_by_gemini</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <name>Playwright Test Automation Framework</name>
+    <url>https://github.com/ducanhdhtb/build_playwright_by_gemini</url>
+
+    <scm>
+        <connection>scm:git:git@github.com:ducanhdhtb/build_playwright_by_gemini.git</connection>
+        <developerConnection>scm:git:ssh://github.com:ducanhdhtb/build_playwright_by_gemini.git</developerConnection>
+        <url>https://github.com/ducanhdhtb/build_playwright_by_gemini/tree/main</url>
+    </scm>
+
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
