@@ -22,18 +22,18 @@ jobs:
     steps:
       # 1. Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Check out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # 2. Set up JDK 11
       - name: Set up JDK 11
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '11'
           distribution: 'temurin'
 
       # 3. Cache Maven packages to speed up builds
       - name: Cache Maven packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
@@ -45,11 +45,11 @@ jobs:
 
       # 5. Store Allure results
       - name: Store Allure results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: allure-results
           path: target/allure-results
-          retention-days: 1 # Keep artifacts for 1 day
+          retention-days: 1
 
   # This job generates and deploys the Allure report to GitHub Pages
   deploy-report:
@@ -65,24 +65,24 @@ jobs:
     steps:
       # 1. Download the Allure results artifact from the previous job
       - name: Download Allure results
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: allure-results
           path: allure-results
 
       # 2. Generate the Allure report
       - name: Generate Allure Report
-        uses: allure-framework/allure-action@v2
+        uses: allure-framework/allure-action@v2 # v2 is still the latest for this action
         with:
           results_path: allure-results
-          report_path: allure-report # The output directory for the report
+          report_path: allure-report
 
       # 3. Upload the generated report as a Pages artifact
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           path: allure-report
 
       # 4. Deploy the artifact to GitHub Pages
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
