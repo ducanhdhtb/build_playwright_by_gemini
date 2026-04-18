@@ -63,14 +63,21 @@ jobs:
       id-token: write
 
     steps:
-      # 1. Download the Allure results artifact from the previous job
+      # 1. Clean up old artifacts before creating a new one
+      - name: Clean up previous artifacts
+        uses: actions/delete-artifact@v5
+        with:
+          name: github-pages
+          ignore-if-not-found: true
+
+      # 2. Download the Allure results artifact from the previous job
       - name: Download Allure results
         uses: actions/download-artifact@v4
         with:
           name: allure-results
           path: allure-results
 
-      # 2. Set up Allure command-line tool
+      # 3. Set up Allure command-line tool
       - name: Set up Allure
         run: |
           sudo wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
@@ -78,16 +85,16 @@ jobs:
           sudo ln -s /opt/allure-2.27.0/bin/allure /usr/bin/allure
           allure --version
 
-      # 3. Generate Allure Report using the CLI
+      # 4. Generate Allure Report using the CLI
       - name: Generate Allure Report
         run: allure generate allure-results -o allure-report
 
-      # 4. Upload the generated report as a Pages artifact
+      # 5. Upload the generated report as a Pages artifact
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: allure-report
 
-      # 5. Deploy the artifact to GitHub Pages
+      # 6. Deploy the artifact to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
