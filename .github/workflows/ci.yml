@@ -72,7 +72,7 @@ jobs:
 
       # 2. Generate the Allure report
       - name: Generate Allure Report
-        uses: allure-framework/allure-action@v2 # v2 is still the latest for this action
+        uses: allure-framework/allure-action@v3
         with:
           results_path: allure-results
           report_path: allure-report
