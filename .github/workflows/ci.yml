@@ -70,19 +70,24 @@ jobs:
           name: allure-results
           path: allure-results
 
-      # 2. Generate the Allure report
-      - name: Generate Allure Report
-        uses: allure-framework/allure-action@main # Using the main branch as a last resort
-        with:
-          results_path: allure-results
-          report_path: allure-report
+      # 2. Set up Allure command-line tool
+      - name: Set up Allure
+        run: |
+          sudo wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
+          sudo tar -zxvf allure-2.27.0.tgz -C /opt/
+          sudo ln -s /opt/allure-2.27.0/bin/allure /usr/bin/allure
+          allure --version
 
-      # 3. Upload the generated report as a Pages artifact
+      # 3. Generate Allure Report using the CLI
+      - name: Generate Allure Report
+        run: allure generate allure-results -o allure-report
+
+      # 4. Upload the generated report as a Pages artifact
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: allure-report
 
-      # 4. Deploy the artifact to GitHub Pages
+      # 5. Deploy the artifact to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
