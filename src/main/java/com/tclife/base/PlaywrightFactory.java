@@ -42,7 +42,13 @@ public class PlaywrightFactory {
         boolean headless = Boolean.parseBoolean(prop.getProperty("headless").trim());
         String baseUrl = prop.getProperty("baseUrl").trim();
 
-        System.out.println("Initializing browser: " + browserName);
+        // Check for CI environment variable
+        if (Boolean.parseBoolean(System.getenv("CI"))) {
+            System.out.println("CI environment detected. Forcing headless mode.");
+            headless = true;
+        }
+
+        System.out.println("Initializing browser: " + browserName + " | Headless: " + headless);
         playwright.set(Playwright.create());
 
         BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions();
@@ -50,7 +56,11 @@ public class PlaywrightFactory {
             launchOptions.setChannel("chrome");
         }
         launchOptions.setHeadless(headless);
-        launchOptions.setArgs(Arrays.asList("--start-maximized"));
+        // --start-maximized is not effective in headless mode on Linux
+        if (!headless) {
+            launchOptions.setArgs(Arrays.asList("--start-maximized"));
+        }
+
 
         switch (browserName.toLowerCase()) {
             case "chromium":
