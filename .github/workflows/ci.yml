@@ -46,12 +46,6 @@ jobs:
       pages: write
       id-token: write
     steps:
-      - name: Clean up previous artifacts
-        uses: actions/delete-artifact@v5
-        with:
-          name: github-pages
-          ignore-if-not-found: true
-
       - name: Download Allure results
         uses: actions/download-artifact@v4
         with:
